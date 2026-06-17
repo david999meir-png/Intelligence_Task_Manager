@@ -25,13 +25,13 @@ if __name__ == "__main__":
     DBConnection.create_database()
     DBConnection.create_tables()
 
-    # print(f'{MissionDB.get_mission_by_id(1)=}')
+    # print(f'{MissionDB.get_mission_by_id(8)=}')
     # print(f'{MissionDB.count_open_missions()=}')
     # print(f'{MissionDB.count_all_missions()=}')
     # print(f'{MissionDB.count_by_status("NEW")=}')
 
 
-    print(f'{MissionDB.count_critical_missions()=}')
+    # print(f'{MissionDB.count_critical_missions()=}')
     
     # print(f'{MissionDB.create_mission({"title": "5" ,"description": "ssssss" ,"location": "aa" ,"difficulty": 8 ,"importance":10 })=}')
     # print(f'{MissionDB.assign_mission(1,10)=}')
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # print(f'{MissionDB.assign_mission(4,10)=}')
 
     # print(f'{MissionDB.update_mission_status(1, "IN_PROGRESS")=}')
-    # print(f'{MissionDB.update_mission_status(8, "CANCELLED")=}')
+    print(f'{MissionDB.update_mission_status(8, "CANCELLED")=}')
     # print(f'{MissionDB.update_mission_status(1, "ASSIGNED")=}')
     # print(f'{MissionDB=}')
     # print(f'{MissionDB=}')
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     # print(AgentDB.increment_completed(1))
     # print(AgentDB.increment_failed(1))
-    # print(AgentDB.get_agent_by_id(1))
+    # print(AgentDB.get_agent_by_id(8))
 
     # print(AgentDB.count_active_agents())
     # print(AgentDB.deactivate_agent(2))

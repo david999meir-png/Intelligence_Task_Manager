@@ -102,7 +102,7 @@ class MissionDB:
                 raise ValueError("You cannot start a task with a status other than ASSIGNED.")
             
         if status == "CANCELLED":
-            if current_status.upper() != "NEW" or current_status.upper() != "ASSIGNED":
+            if current_status.upper() != "NEW" and current_status.upper() != "ASSIGNED":
                 raise ValueError("You can only cancel a task if the status is NEW or ASSIGNED .")
         
         if status == "FAILED" or status == "COMPLETED":
