@@ -1,3 +1,4 @@
+import logging
 from database.db_connection import DBConnection
 from database.agent_db import AgentDB
 
@@ -15,7 +16,7 @@ class MissionDB:
                     risk_level = "MEDIUM"
                 elif 18 <= risk_value <= 24:
                     risk_level = "HIGH"
-                elif risk_value <= 25:
+                elif risk_value >= 25:
                     risk_level = "CRITICAL"
                 else:
                     raise ValueError(f"invalid value in difficulty or importance")
@@ -28,6 +29,7 @@ class MissionDB:
                 
                 conn.commit()
                 new_id = cursor.lastrowid
+                logging.info(f"mission id {new_id} added.")
 
                 mission = MissionDB.get_mission_by_id(new_id)
                 return mission
@@ -62,6 +64,7 @@ class MissionDB:
                 raise ValueError(f"agent id {a_id} not active.")
             
             open_mission = MissionDB.get_open_missions_by_agent(a_id)
+            print(open_mission)
             if len(open_mission) >= 3:
                 raise ValueError(f'agent id: {a_id} alrady has the max open missions')
             
@@ -70,7 +73,8 @@ class MissionDB:
                 raise ValueError(f"the mission level is critical, you need agent with rank Commander fro this")
             
             status_mission = mission["status"]
-            if status_mission is not "NEW":
+            if status_mission.upper() != "NEW":
+                print(status_mission)
                 raise ValueError(f"field, you can't assign mission with other status, only NEW")
                 
             with conn.cursor(dictionary=True) as cursor:
@@ -98,8 +102,12 @@ class MissionDB:
                 raise ValueError("You cannot start a task with a status other than ASSIGNED.")
             
         if status == "CANCELLED":
-            if current_status != "NEW" or current_status != "ASSIGNED":
+            if current_status.upper() != "NEW" or current_status.upper() != "ASSIGNED":
                 raise ValueError("You can only cancel a task if the status is NEW or ASSIGNED .")
+        
+        if status == "FAILED" or status == "COMPLETED":
+            if current_status != "IN_PROGRESS":
+                raise ValueError("Only a task with a status of NEW or ASSIGNED can be canceled.")
 
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
@@ -117,7 +125,7 @@ class MissionDB:
     def get_open_missions_by_agent(id):
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT * FROM missions WHERE assigned_agent_id = %s AND status in('IN_PROGRESS', 'ASSIGNED')"""
+                sql = """SELECT * FROM missions WHERE assigned_agent_id = %s AND status in ('IN_PROGRESS', 'ASSIGNED')"""
                 cursor.execute(sql, (id,))
 
                 result = cursor.fetchall()

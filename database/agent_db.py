@@ -1,3 +1,4 @@
+import logging
 from database.db_connection import DBConnection
 
 
@@ -14,6 +15,7 @@ class AgentDB:
                 
                 conn.commit()
                 new_id = cursor.lastrowid
+                logging.info(f"agent id {new_id} added.")
 
                 agent = AgentDB.get_agent_by_id(new_id)
                 return agent

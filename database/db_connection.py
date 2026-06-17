@@ -1,3 +1,4 @@
+import logging
 import mysql.connector
 
 class DBConnection:
@@ -13,6 +14,7 @@ class DBConnection:
     
     @staticmethod
     def create_database():
+        logging.debug("run the create_database func")
         conn = mysql.connector.connect(
             host="127.0.0.1", 
             port=3306,
@@ -30,6 +32,8 @@ class DBConnection:
     
     @staticmethod
     def create_tables():
+        logging.debug("run the create_tables func")
+
         with DBConnection.get_connection() as conn:
             with conn.cursor() as cursor:
                 sql_agents = """
@@ -40,7 +44,7 @@ class DBConnection:
                 is_active BOOLEAN DEFAULT TRUE,
                 completed_missions INT DEFAULT 0,
                 failed_missions INT DEFAULT 0,
-                agent_rank ENUM('Junior', 'Senior', 'Commander')
+                agent_rank ENUM('Junior', 'Senior', 'Commander') NOT NULL
                 )
                         """
                 
