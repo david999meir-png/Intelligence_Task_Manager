@@ -1,4 +1,5 @@
 from database.db_connection import DBConnection
+from database.agent_db import AgentDB
 
 class MissionDB:
     @staticmethod
@@ -54,6 +55,24 @@ class MissionDB:
     @staticmethod
     def assign_mission(m_id, a_id):
         with DBConnection.get_connection() as conn:
+            agent = AgentDB.get_agent_by_id(a_id)
+
+            is_active = agent["is_active"]
+            if not is_active:
+                raise ValueError(f"agent id {a_id} not active.")
+            
+            open_mission = MissionDB.get_open_missions_by_agent(a_id)
+            if len(open_mission) >= 3:
+                raise ValueError(f'agent id: {a_id} alrady has the max open missions')
+            
+            mission = MissionDB.get_mission_by_id(m_id)
+            if mission["risk_level"] == "CRITICAL" and agent["agent_rank"] != "Commander":
+                raise ValueError(f"the mission level is critical, you need agent with rank Commander fro this")
+            
+            status_mission = mission["status"]
+            if status_mission is not "NEW":
+                raise ValueError(f"field, you can't assign mission with other status, only NEW")
+                
             with conn.cursor(dictionary=True) as cursor:
                 sql = """UPDATE missions SET assigned_agent_id = %s WHERE id = %s"""
                 cursor.execute(sql, (a_id, m_id))
@@ -67,6 +86,21 @@ class MissionDB:
 
     @staticmethod
     def update_mission_status(id, status):
+        mission = MissionDB.get_mission_by_id(id)
+        current_status = mission["status"]
+
+        if status == "ASSIGNED":
+            if current_status != "NEW":
+                raise ValueError(F"It is not possible to associate a task with a status other than New")
+        
+        if status == "IN_PROGRESS":
+            if  current_status != "ASSIGNED":
+                raise ValueError("You cannot start a task with a status other than ASSIGNED.")
+            
+        if status == "CANCELLED":
+            if current_status != "NEW" or current_status != "ASSIGNED":
+                raise ValueError("You can only cancel a task if the status is NEW or ASSIGNED .")
+
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
                 sql = """UPDATE missions SET status = %s WHERE id = %s"""

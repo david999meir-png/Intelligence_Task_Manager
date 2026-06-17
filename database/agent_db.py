@@ -102,11 +102,14 @@ class AgentDB:
     def get_agent_performance(id):
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT completed_missions AS completed, failed_missions AS failed WHERE id = %s"""
+                sql = """SELECT completed_missions AS completed, failed_missions AS failed FROM agents WHERE id = %s"""
                 cursor.execute(sql, (id,))
 
-                report_dict = cursor.fetchall()
-                total = report_dict["completed"] + report_dict["failed"] # 100
+                report_dict = cursor.fetchone()
+                total = report_dict["completed"] + report_dict["failed"]
+                if total <= 0:
+                    raise ValueError(f"agent id {id} asn't mission.")
+                
                 success_rate = (report_dict["completed"] / total) * 100
 
                 report_dict["total"] = total
@@ -118,7 +121,7 @@ class AgentDB:
     def count_active_agents():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = "SELECT COUNT(*) AS total_active WHERE is_active = TRUE"
+                sql = "SELECT COUNT(*) AS total_active FROM agents WHERE is_active = TRUE"
                 cursor.execute(sql)
 
                 result = cursor.fetchone()
