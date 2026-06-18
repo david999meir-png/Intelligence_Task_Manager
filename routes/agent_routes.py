@@ -17,6 +17,7 @@ class AgentUP(BaseModel):
     name: str | None = Field(max_length=50, default=None)
     specialty: str | None = Field(max_length=50, default=None)
     agent_rank: None | Literal['Junior', 'Senior', 'Commander'] = None
+    is_active: None | bool = None
 
 
 router = APIRouter()
