@@ -14,6 +14,33 @@
 ```
 ##
 # endpoints #  
+## agents endpoints  ##
+-   POST   /agents חדש סוכן יצירת 
+-   GET   /agents הסוכנים כל 
+-   GET   /agents/{id} לפי סוכן ID 
+-   PUT   /agents/{id} סוכן עדכון 
+-   PUT   /agents/{id}/deactivate סוכן השבתת 
+-   GET   /agents/{id}/performance סוכן ביצועי 
+##  
+## missions endpoints  ##
+-   POST   /missions משימה יצירת
+-   GET   /missions המשימות כל 
+-   GET   /missions/{id} לפי משימה ID 
+-   PUT   /missions/{id}/assign/{agent_id} 
+-   PUT   /missions/{id}/start משימה התחלת 
+-   PUT   /missions/{id}/complete בהצלחה סיום 
+-   PUT   /missions/{id}/fail בכישלון סיום 
+-   PUT   /missions/{id}/cancel משימה ביטול 
+##  
+## reports endpoints  ##
+-   GET   /reports/summary המערכת של כללי דוח 
+-   GET   /reports/missions-by-status סטטוס לפי משימות 
+-   GET   /reports/top-agent המצטיין הסוכן  get_top_agent 
+
+##
+# system flow #  
+- create agent: fastapi request -> routers handler[agents] -> data line[add agent] -> answer: 
+- create mission: fastapi request -> routers handler[mission] -> data line[add mission] ->  answer: 
 
 ##
 # table structure #  
