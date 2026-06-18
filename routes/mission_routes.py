@@ -40,7 +40,7 @@ def add_mission(data: Mission):
     
     except ValueError as e:
         logging.error(e)
-        raise HTTPException(status_code=400, detail=e)
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("")
@@ -107,14 +107,14 @@ def assign_mission_to_agent(id: int, agent_id: int):
     if not assigned:
         logging.error(f"mission id {id} not assign to agen id {agent_id}")
         raise HTTPException(status_code=400, detail=f"mission id {id} not assign to agen id {agent_id}")
-    return {"msg": "mission id {id} assign to agen id {agent_id} successfully"}  
+    return {"msg": f"mission id {id} assign to agen id {agent_id} successfully"}  
 
 
 @router.put("/{id}/start")
 def start_mission(id: int):
     logging.info(f"get missions/{id}/start call")
 
-    found = MissionDB.get_mission_by_id()
+    found = MissionDB.get_mission_by_id(id)
     if not found:
         logging.error(f"mission id {id} not found")
         raise HTTPException(status_code=404, detail=f"mission id {id} not found.")
@@ -122,6 +122,7 @@ def start_mission(id: int):
     try:
         updated = MissionDB.update_mission_status(id, "IN_PROGRESS")
         if not updated:
+            logging.error(f"mission alrady IN_PROGRESS: {id}")
             raise ValueError("this mission alrady IN_PROGRESS")
         
         logging.info(f"get missions/{id}/start finish")
@@ -129,16 +130,15 @@ def start_mission(id: int):
 
 
     except ValueError as e:
-        logging.info(f"mission start fiald: {e}")
-        raise HTTPException(status_code=400, detail=e)
-
+        logging.error(f"mission start fiald: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/{id}/complete")
 def Successful_completion_of_a_task(id: int):
     logging.info(f"get missions/{id}/complete call")
 
-    found = MissionDB.get_mission_by_id()
+    found = MissionDB.get_mission_by_id(id)
     if not found:
         logging.error(f"mission id {id} not found")
         raise HTTPException(status_code=404, detail=f"mission id {id} not found.")
@@ -146,6 +146,7 @@ def Successful_completion_of_a_task(id: int):
     try:
         updated = MissionDB.update_mission_status(id, "COMPLETED")
         if not updated:
+            logging.error(f"mission id {id} not updated")
             raise ValueError("this mission alrady COMPLETED")
         
         agent_id = found["assigned_agent_id"]
@@ -156,15 +157,15 @@ def Successful_completion_of_a_task(id: int):
 
 
     except ValueError as e:
-        logging.info(f"mission complete fiald: {e}")
-        raise HTTPException(status_code=400, detail=e)
+        logging.error(f"mission complete fiald: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/{id}/fail")
 def field_completion_of_a_task(id: int):
     logging.info(f"get missions/{id}/fail call")
 
-    found = MissionDB.get_mission_by_id()
+    found = MissionDB.get_mission_by_id(id)
     if not found:
         logging.error(f"mission id {id} not found")
         raise HTTPException(status_code=404, detail=f"mission id {id} not found.")
@@ -172,6 +173,7 @@ def field_completion_of_a_task(id: int):
     try:
         updated = MissionDB.update_mission_status(id, "FAILED")
         if not updated:
+            logging.error(f"mission id {id} not updated")
             raise ValueError("this mission alrady FAILED")
         
         agent_id = found["assigned_agent_id"]
@@ -181,15 +183,15 @@ def field_completion_of_a_task(id: int):
         return {"msg": f"mission id {id} update_mission_status to FAILED successfully."}
 
     except ValueError as e:
-        logging.info(f"mission FAILED fiald: {e}")
-        raise HTTPException(status_code=400, detail=e)
+        logging.error(f"mission FAILED fiald: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
     
 
 @router.put("/{id}/cancel")
 def Canceling_task(id: int):
     logging.info(f"get missions/{id}/cancel call")
 
-    found = MissionDB.get_mission_by_id()
+    found = MissionDB.get_mission_by_id(id)
     if not found:
         logging.error(f"mission id {id} not found")
         raise HTTPException(status_code=404, detail=f"mission id {id} not found.")
@@ -203,5 +205,5 @@ def Canceling_task(id: int):
         return {"msg": f"mission id {id} update_mission_status to CANCELLED successfully."}
 
     except ValueError as e:
-        logging.info(f"mission FAILED fiald: {e}")
-        raise HTTPException(status_code=400, detail=e)
+        logging.error(f"mission FAILED fiald: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))

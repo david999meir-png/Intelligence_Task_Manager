@@ -1,6 +1,8 @@
 import logging
 from database.db_connection import DBConnection
 
+logger = logging.getLogger(__name__)
+
 
 class AgentDB:
     @staticmethod
@@ -52,11 +54,11 @@ class AgentDB:
 
                 cursor.execute(sql, values)
                 conn.commit()
+                logger.info(f"agent id: {id} updated.")
 
                 updated = cursor.rowcount > 0
                 return updated
 
-    
     @staticmethod
     def deactivate_agent(id):
         with DBConnection.get_connection() as conn:
@@ -65,6 +67,7 @@ class AgentDB:
                 cursor.execute(sql, (id,))
 
                 conn.commit()
+                logger.info(f"agen id {id} become deactive.")
                 changed = cursor.rowcount > 0
                 return changed
 
@@ -76,6 +79,7 @@ class AgentDB:
                 cursor.execute(sql, (id,))
 
                 conn.commit()
+                logger.info(f"agent id {id} increment completed")
                 changed = cursor.rowcount > 0
 
                 if changed:
@@ -90,6 +94,7 @@ class AgentDB:
                 cursor.execute(sql, (id,))
 
                 conn.commit()
+                logger.info(f"agent id {id} increment failed")
                 changed = cursor.rowcount > 0
 
                 if changed:
@@ -108,10 +113,7 @@ class AgentDB:
                 if total <= 0:
                     success_rate = 0
                 else:
-                    total = report_dict["completed"] + report_dict["failed"]
-
-                
-                success_rate = (report_dict["completed"] / total) * 100
+                    success_rate = (report_dict["completed"] / total) * 100
 
                 report_dict["total"] = total
                 report_dict["success_rate"] = success_rate

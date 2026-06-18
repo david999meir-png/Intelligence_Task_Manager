@@ -32,8 +32,8 @@ def add_agent(data: Agent):
         return new_agent
     
     except ValueError as e:
-        logging.error(e)
-        raise HTTPException(status_code=400, detail=e)
+        logging.error(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("")
@@ -77,8 +77,6 @@ def update_agent(id: int, agent: AgentUP):
     
     logging.info("put agent/ finish")
     return {"msg": f"id {id} updated."}
-
-
 
 
 @router.put("/{id}/deactivate")

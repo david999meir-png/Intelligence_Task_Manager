@@ -2,6 +2,10 @@ import logging
 from database.db_connection import DBConnection
 from database.agent_db import AgentDB
 
+
+logger = logging.getLogger(__name__)
+
+
 class MissionDB:
     @staticmethod
     def create_mission(data):
@@ -80,6 +84,7 @@ class MissionDB:
                 cursor.execute(sql, ("ASSIGNED", a_id, m_id))
 
                 conn.commit()
+                logger.info(f"mission id {m_id} assign to agen {a_id}")
                 assigned = cursor.rowcount > 0
                 return assigned
 
@@ -102,7 +107,7 @@ class MissionDB:
         
         if status == "FAILED" or status == "COMPLETED":
             if current_status != "IN_PROGRESS":
-                raise ValueError("Only a task with a status of NEW or ASSIGNED can be canceled.")
+                raise ValueError("Only a task with a status of NEW or ASSIGNED can be finish.")
 
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
@@ -110,9 +115,9 @@ class MissionDB:
                 cursor.execute(sql, (status, id))
 
                 conn.commit()
+                logger.info(f"mission id: {id} updated to {status}")
                 return cursor.rowcount > 0
-
-            
+     
     @staticmethod
     def get_open_missions_by_agent(id):
         with DBConnection.get_connection() as conn:
@@ -180,13 +185,12 @@ class MissionDB:
     def count_completed_missions():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT COUNT(*) AS completed_missions FROM missions WHERE status = 'CANCELLED' """
+                sql = """SELECT COUNT(*) AS completed_missions FROM missions WHERE status = 'COMPLETED' """
                 cursor.execute(sql)
 
                 result = cursor.fetchone()
                 return result
             
-
     @staticmethod
     def count_field_missions():
         with DBConnection.get_connection() as conn:
@@ -196,3 +200,4 @@ class MissionDB:
 
                 result = cursor.fetchone()
                 return result
+            
