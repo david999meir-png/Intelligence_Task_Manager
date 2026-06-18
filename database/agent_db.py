@@ -14,14 +14,14 @@ class AgentDB:
                 """
                 values = list(data.values())
                 cursor.execute(sql, values)
-                
+
                 conn.commit()
                 new_id = cursor.lastrowid
                 logging.info(f"agent id {new_id} added.")
 
                 agent = AgentDB.get_agent_by_id(new_id)
                 return agent
-            
+
     @staticmethod
     def get_all_agents():
         with DBConnection.get_connection() as conn:
@@ -31,7 +31,7 @@ class AgentDB:
 
                 agents = cursor.fetchall()
                 return agents
-            
+
     @staticmethod
     def get_agent_by_id(id):
         with DBConnection.get_connection() as conn:
@@ -41,7 +41,7 @@ class AgentDB:
 
                 agent = cursor.fetchone()
                 return agent
-            
+
     @staticmethod
     def update_agent(id, data):
         with DBConnection.get_connection() as conn:
@@ -84,8 +84,10 @@ class AgentDB:
 
                 if changed:
                     return {"msg": f"id {id} increment_completed successfully."}
-                return {"msg": f" failed. id {id} NOT increment_completed successfully."}
-            
+                return {
+                    "msg": f" failed. id {id} NOT increment_completed successfully."
+                }
+
     @staticmethod
     def increment_failed(id):
         with DBConnection.get_connection() as conn:
@@ -100,7 +102,7 @@ class AgentDB:
                 if changed:
                     return {"msg": f"id {id} increment_failed successfully."}
                 return {"msg": f" failed. id {id} NOT increment_failed successfully."}
-            
+
     @staticmethod
     def get_agent_performance(id):
         with DBConnection.get_connection() as conn:

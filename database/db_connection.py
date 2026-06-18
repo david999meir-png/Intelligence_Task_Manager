@@ -1,22 +1,23 @@
 import logging
 import mysql.connector
 
+
 class DBConnection:
     @staticmethod
     def get_connection():
         return mysql.connector.connect(
-            host="127.0.0.1", 
+            host="127.0.0.1",
             port=3306,
             user="root",
             password="1234",
-            database="Intelligence_db"
+            database="Intelligence_db",
         )
-    
+
     @staticmethod
     def create_database():
         logging.debug("run the create_database func")
         conn = mysql.connector.connect(
-            host="127.0.0.1", 
+            host="127.0.0.1",
             port=3306,
             user="root",
             password="1234",
@@ -26,10 +27,10 @@ class DBConnection:
         sql = "CREATE DATABASE IF NOT EXISTS Intelligence_db"
         cursor.execute(sql)
         conn.commit()
-        
+
         cursor.close()
         conn.close()
-    
+
     @staticmethod
     def create_tables():
         logging.debug("run the create_tables func")
@@ -47,7 +48,7 @@ class DBConnection:
                 agent_rank ENUM('Junior', 'Senior', 'Commander') NOT NULL
                 )
                         """
-                
+
                 sql_missions = """
                 CREATE TABLE IF NOT EXISTS missions(
                 id INT PRIMARY KEY AUTO_INCREMENT, 

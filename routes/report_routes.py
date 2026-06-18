@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+
 @router.get("/summary")
 def get_summary():
     logging.info("get reports/summary/ call")
@@ -21,8 +22,14 @@ def get_summary():
     critical_missions = MissionDB.count_critical_missions()
 
     logging.info("get reports/summary/ finish")
-    return {**active_agents_count, **total_missions, **open_missions,\
-             **completed_missions, **failed_missions, **critical_missions}
+    return {
+        **active_agents_count,
+        **total_missions,
+        **open_missions,
+        **completed_missions,
+        **failed_missions,
+        **critical_missions,
+    }
 
 
 @router.get("/missions-by-status")
@@ -35,7 +42,7 @@ def get_mission_by_status():
     completed = MissionDB.count_by_status("COMPLETED")
     failed = MissionDB.count_by_status("FAILED")
     cancel = MissionDB.count_by_status("CANCELLED")
-    
+
     logging.info("get reports/missions-by-status finish")
     return {**new, **assign, **in_progress, **completed, **failed, **cancel}
 
