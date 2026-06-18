@@ -29,14 +29,15 @@ def get_summary():
 def get_mission_by_status():
     logging.info("get reports/missions-by-status call")
 
-    opens = MissionDB.count_open_missions()
+    new = MissionDB.count_by_status("NEW")
+    assign = MissionDB.count_by_status("ASSIGNED")
     in_progress = MissionDB.count_by_status("IN_PROGRESS")
     completed = MissionDB.count_by_status("COMPLETED")
     failed = MissionDB.count_by_status("FAILED")
     cancel = MissionDB.count_by_status("CANCELLED")
     
     logging.info("get reports/missions-by-status finish")
-    return {**opens, **in_progress, **completed, **failed, **cancel}
+    return {**new, **assign, **in_progress, **completed, **failed, **cancel}
 
 
 @router.get("/top-agent")

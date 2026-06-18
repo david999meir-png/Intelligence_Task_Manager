@@ -64,7 +64,6 @@ class MissionDB:
                 raise ValueError(f"agent id {a_id} not active.")
             
             open_mission = MissionDB.get_open_missions_by_agent(a_id)
-            print(open_mission)
             if len(open_mission) >= 3:
                 raise ValueError(f'agent id: {a_id} alrady has the max open missions')
             
@@ -74,19 +73,15 @@ class MissionDB:
             
             status_mission = mission["status"]
             if status_mission.upper() != "NEW":
-                print(status_mission)
                 raise ValueError(f"field, you can't assign mission with other status, only NEW")
                 
             with conn.cursor(dictionary=True) as cursor:
-                sql = """UPDATE missions SET assigned_agent_id = %s WHERE id = %s"""
-                cursor.execute(sql, (a_id, m_id))
+                sql = """UPDATE missions SET status = %s, assigned_agent_id = %s WHERE id = %s"""
+                cursor.execute(sql, ("ASSIGNED", a_id, m_id))
 
                 conn.commit()
                 assigned = cursor.rowcount > 0
-
-                if assigned:
-                    return {"msg": f"mission id {m_id} assign_mission successfully."}
-                return {"msg": f" failed. mission id {m_id} NOT assign_mission successfully."}
+                return assigned
 
     @staticmethod
     def update_mission_status(id, status):
@@ -115,11 +110,8 @@ class MissionDB:
                 cursor.execute(sql, (status, id))
 
                 conn.commit()
-                status_apdated = cursor.rowcount > 0
+                return cursor.rowcount > 0
 
-                if status_apdated:
-                    return {"msg": f"mission id {id} update_mission_status successfully."}
-                return {"msg": f" failed. mission id {id} NOT update_mission_status successfully."}
             
     @staticmethod
     def get_open_missions_by_agent(id):
@@ -145,8 +137,8 @@ class MissionDB:
     def count_by_status(status):
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT COUNT(*) AS total_by_status FROM missions WHERE status = %s"""
-                cursor.execute(sql, (status,))
+                sql = """SELECT COUNT(*) as %s FROM missions WHERE status = %s"""
+                cursor.execute(sql, (status.lower(), status,))
 
                 result = cursor.fetchone()
                 return result
@@ -155,7 +147,7 @@ class MissionDB:
     def count_open_missions():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT COUNT(*) AS open_missions FROM missions WHERE status in('IN_PROGRESS', 'ASSIGNED')"""
+                sql = """SELECT COUNT(*) AS open FROM missions WHERE status in('IN_PROGRESS', 'ASSIGNED')"""
                 cursor.execute(sql)
 
                 result = cursor.fetchone()
@@ -165,7 +157,7 @@ class MissionDB:
     def count_critical_missions():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT COUNT(*) AS CRITICAL_missions FROM missions WHERE status = 'CRITICAL' """
+                sql = """SELECT COUNT(*) AS critical_missions FROM missions WHERE risk_level = 'CRITICAL' """
                 cursor.execute(sql)
 
                 result = cursor.fetchone()
@@ -175,7 +167,7 @@ class MissionDB:
     def get_top_agent():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:     
-                sql = """SELECT * FROM missions 
+                sql = """SELECT * FROM agents 
                 ORDER BY completed_missions DESC
                  LIMIT 1 """   
                 
@@ -183,3 +175,24 @@ class MissionDB:
 
                 top_agen = cursor.fetchone()
                 return top_agen
+            
+    @staticmethod
+    def count_completed_missions():
+        with DBConnection.get_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                sql = """SELECT COUNT(*) AS completed_missions FROM missions WHERE status = 'CANCELLED' """
+                cursor.execute(sql)
+
+                result = cursor.fetchone()
+                return result
+            
+
+    @staticmethod
+    def count_field_missions():
+        with DBConnection.get_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                sql = """SELECT COUNT(*) AS failed_missions FROM missions WHERE status = 'FAILED' """
+                cursor.execute(sql)
+
+                result = cursor.fetchone()
+                return result

@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 import uvicorn
 from logs.setup_log import setup_logger
@@ -27,10 +28,12 @@ mission = [
     {"title": "4" ,"description": "ssssss" ,"location": "aa" ,"difficulty": 1 ,"importance":10 },
     {"title": "5" ,"description": "ssssss" ,"location": "aa" ,"difficulty": 8 ,"importance":10 }
 ]
+setup_logger()
+logger = logging.getLogger(__name__)
+
 
 
 if __name__ == "__main__":
-    setup_logger()
 
     DBConnection.create_database()
     DBConnection.create_tables()

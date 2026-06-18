@@ -54,9 +54,8 @@ class AgentDB:
                 conn.commit()
 
                 updated = cursor.rowcount > 0
-                if updated:
-                    return {"msg": f"id {id} updated."}
-                return {"msg": f" failed. id {id} NOT updated."}
+                return updated
+
     
     @staticmethod
     def deactivate_agent(id):
@@ -67,11 +66,8 @@ class AgentDB:
 
                 conn.commit()
                 changed = cursor.rowcount > 0
+                return changed
 
-                if changed:
-                    return {"msg": f"id {id} become deactive."}
-                return {"msg": f" failed. id {id} NOT become deactive."}
-   
     @staticmethod
     def increment_completed(id):
         with DBConnection.get_connection() as conn:
@@ -110,7 +106,10 @@ class AgentDB:
                 report_dict = cursor.fetchone()
                 total = report_dict["completed"] + report_dict["failed"]
                 if total <= 0:
-                    raise ValueError(f"agent id {id} asn't mission.")
+                    success_rate = 0
+                else:
+                    total = report_dict["completed"] + report_dict["failed"]
+
                 
                 success_rate = (report_dict["completed"] / total) * 100
 
@@ -123,8 +122,8 @@ class AgentDB:
     def count_active_agents():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = "SELECT COUNT(*) AS total_active FROM agents WHERE is_active = TRUE"
+                sql = "SELECT COUNT(*) AS active_agents_count FROM agents WHERE is_active = TRUE"
                 cursor.execute(sql)
 
                 result = cursor.fetchone()
-                return result["total_active"]
+                return result
