@@ -17,15 +17,6 @@ class Mission(BaseModel):
     importance: int = Field(ge=1, le=10)
     
 
-class MissionUP(BaseModel):
-    title: str | None = Field(max_length=255, default=None)
-    description: str | None = None
-    location: str | None = Field(max_length=255, default=None)
-    difficulty: int | None = Field(ge=1, le=10, default=None)
-    importance: int | None = Field(ge=1, le=10, default=None)
-
-
-
 router = APIRouter()
 
 

@@ -65,6 +65,10 @@ def get_agent_by_id(id: int):
 def update_agent(id: int, agent: AgentUP):
     logging.info("put agent/ call")
 
+    if agent is None:
+        logger.error(f"try to update an agent with empty data: {id}")
+        raise HTTPException(status_code=400, detail=f"try to update an agent with empty data: {id}")
+
     found = AgentDB.get_agent_by_id(id)
     if not found:
         logging.error(f"agent id {id} not found")
