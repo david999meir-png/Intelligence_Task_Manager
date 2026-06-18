@@ -1,8 +1,12 @@
+from fastapi import FastAPI
+import uvicorn
 from logs.setup_log import setup_logger
 from database.db_connection import DBConnection
 from database.agent_db import AgentDB
 from database.mission_db import MissionDB
 
+
+app = FastAPI()
 
 agent = [
     {"name": "david" , "specialty": "aaa" , "agent_rank": "Junior"},
@@ -19,11 +23,16 @@ mission = [
     {"title": "5" ,"description": "ssssss" ,"location": "aa" ,"difficulty": 8 ,"importance":10 }
 ]
 
-setup_logger()
 
 if __name__ == "__main__":
+    setup_logger()
+
     DBConnection.create_database()
     DBConnection.create_tables()
+
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
+
 
     # print(f'{MissionDB.get_mission_by_id(8)=}')
     # print(f'{MissionDB.count_open_missions()=}')
@@ -40,7 +49,7 @@ if __name__ == "__main__":
     # print(f'{MissionDB.assign_mission(4,10)=}')
 
     # print(f'{MissionDB.update_mission_status(1, "IN_PROGRESS")=}')
-    print(f'{MissionDB.update_mission_status(8, "CANCELLED")=}')
+    # print(f'{MissionDB.update_mission_status(8, "CANCELLED")=}')
     # print(f'{MissionDB.update_mission_status(1, "ASSIGNED")=}')
     # print(f'{MissionDB=}')
     # print(f'{MissionDB=}')
