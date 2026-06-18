@@ -86,7 +86,7 @@ def assign_mission_to_agent(id: int, agent_id: int):
     open_missions = len(MissionDB.get_open_missions_by_agent(agent_id))
     if open_missions >= 3:
         logging.error(f"Agent has reached maximum missions")
-        raise HTTPException(status_code=400, detail=f"Agent has reached maximum missions: {agent_id}")
+        raise HTTPException(status_code=400, detail=f"Agent has reached maximum missions: id ={agent_id} open missions={open_missions}")
     
     risk_level = mission_found["risk_level"]
     if risk_level == "CRITICAL":

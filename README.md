@@ -41,6 +41,12 @@
 # system flow #  
 - create agent: fastapi request -> routers handler[agents] -> data line[add agent] -> answer: 
 - create mission: fastapi request -> routers handler[mission] -> data line[add mission] ->  answer: 
+- assign: fastapi request -> routers handler[mission] -> data line -> assign_mission -> checks -> answer:
+- start mission: fastapi request -> routers handler[mission] -> update_mission_status -> answer:
+- finish mission: fastapi request -> routers handler[mission] -> update_mission_status -> answer:
+- report /summary: fastapi request -> routers handler[report] -> count_active_agents, count_all_missions, count_open_missions, count_completed_missions, count_field_missions, count_critical_missions -> answer:
+- report /missions-by-status: fastapi request -> routers handler[report] -> count_by_status -> answer:
+- report /top-agent: fastapi request -> routers handler[report] -> get_top_agent -> answer:
 
 ##
 # table structure #  
