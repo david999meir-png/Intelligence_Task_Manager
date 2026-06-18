@@ -1,5 +1,5 @@
 # Intelligence Task Manager #  
-### Agent and task management system.
+### Agent and task management system with fast api server.
 ### The system will manage adding agents or tasks as well as assigning tasks to agents according to certain legalities ###    
 ##  
 # folder structure #  
@@ -11,7 +11,10 @@
 ├── README.md 
 ├── requirements.txt 
 └── .gitignore 
-```  
+```
+##
+# endpoints #  
+
 ##
 # table structure #  
 ## agents table ##  
