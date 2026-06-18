@@ -107,7 +107,7 @@ class MissionDB:
         
         if status == "FAILED" or status == "COMPLETED":
             if current_status != "IN_PROGRESS":
-                raise ValueError("Only a task with a status of NEW or ASSIGNED can be finish.")
+                raise ValueError("Only a task with a status of IN_PROGRESS can be finish.")
 
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
