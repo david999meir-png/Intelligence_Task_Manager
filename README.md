@@ -122,7 +122,7 @@ get_top_agent()|The agent with the highest completed_missions
 3. ```cd .\Intelligence_Task_Manager\```
 4. ```python -m venv .venv ```  
 5. ```.\.venv\Scripts\activate ```  
-6. ```pip install -r .\requierements.txt```
+6. ```pip install -r requirements.txt```
 7. ```py main.py```
 
 
