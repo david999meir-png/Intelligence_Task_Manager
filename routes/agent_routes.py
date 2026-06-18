@@ -65,7 +65,7 @@ def get_agent_by_id(id: int):
 def update_agent(id: int, agent: AgentUP):
     logging.info("put agent/ call")
 
-    if not agent:
+    if len(agent.model_dump(exclude_none=True)) == 0:
         logger.error(f"try to update an agent with empty data: {id}")
         raise HTTPException(status_code=400, detail=f"try to update an agent with empty data: {id}")
 
