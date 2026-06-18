@@ -152,7 +152,7 @@ class MissionDB:
     def count_open_missions():
         with DBConnection.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
-                sql = """SELECT COUNT(*) AS open FROM missions WHERE status in('IN_PROGRESS', 'ASSIGNED')"""
+                sql = """SELECT COUNT(*) AS open_missions FROM missions WHERE status in('IN_PROGRESS', 'ASSIGNED')"""
                 cursor.execute(sql)
 
                 result = cursor.fetchone()
