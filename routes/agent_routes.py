@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 from typing import Literal
 from database.agent_db import AgentDB
 
+logger = logging.getLogger(__name__)
+
 
 class Agent(BaseModel):
     name: str = Field(max_length=50)
@@ -37,7 +39,7 @@ def add_agent(data: Agent):
 @router.get("")
 def get_all_agents():
     logging.info("get agent/ call")
-    
+
     agents =  AgentDB.get_all_agents()
     if not agents:
         logging.warning('empty list')

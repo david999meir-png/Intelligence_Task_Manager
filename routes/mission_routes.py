@@ -6,6 +6,9 @@ from database.mission_db import MissionDB
 from database.agent_db import AgentDB
 
 
+logger = logging.getLogger(__name__)
+
+
 class Mission(BaseModel):
     title: str = Field(max_length=255)
     description: str
