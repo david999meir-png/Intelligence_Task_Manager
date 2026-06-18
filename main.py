@@ -4,9 +4,14 @@ from logs.setup_log import setup_logger
 from database.db_connection import DBConnection
 from database.agent_db import AgentDB
 from database.mission_db import MissionDB
+from routes import agent_routes, mission_routes, report_routes
 
 
 app = FastAPI()
+
+app.include_router(agent_routes.router, prefix="/agents", tags=["agents"])
+app.include_router(mission_routes.router, prefix="/missions", tags=["missions"])
+app.include_router(report_routes.router, prefix="/reports", tags=["reports"])
 
 agent = [
     {"name": "david" , "specialty": "aaa" , "agent_rank": "Junior"},
