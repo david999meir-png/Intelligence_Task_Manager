@@ -119,10 +119,11 @@ get_top_agent()|The agent with the highest completed_missions
 # Running instructions #
 1. ```git clone https://github.com/david999meir-png/Intelligence_Task_Manager```  
 2. ```docker run -d --name intelligence-mysql -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=Intelligence_db -p 3306:3306 mysql:8.0```
-3. ```python -m venv .venv ```  
-4. ```.\.venv\Scripts\activate ```  
-5. ```pip install -r requirements.txt```
-6. ```py main.py```
+3. ```cd .\Intelligence_Task_Manager\```
+4. ```python -m venv .venv ```  
+5. ```.\.venv\Scripts\activate ```  
+6. ```pip install -r .\requierements.txt```
+7. ```py main.py```
 
 
    
